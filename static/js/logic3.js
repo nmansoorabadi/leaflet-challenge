@@ -7,7 +7,13 @@ function createMap(speedMap) {
   id: "mapbox.light",
   accessToken: API_KEY
 });
-const darkmap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+const streetMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
+  attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
+  maxZoom: 18,
+  id: "mapbox.streets",
+  accessToken: API_KEY
+});
+const darkMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
   attribution: "Map data &copy; <a href=\"https://www.openstreetmap.org/\">OpenStreetMap</a> contributors, <a href=\"https://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA</a>, Imagery © <a href=\"https://www.mapbox.com/\">Mapbox</a>",
   maxZoom: 18,
   id: "mapbox.dark",
@@ -26,9 +32,10 @@ var myMap= L.map("map",{
 
 const baseMaps = {
   // 'Satellite':satelliteMap,
-  'Average of Wind direction': lightMap,
+  'Grey Map': lightMap,
   // 'Outdoors': outdoorMap,
-  'Average of Wind Speed': darkmap
+  'Street Map': streetMap,
+  'Dark Map' : darkMap
 },
 overlayLayer = {
   'Wind Speed': speedMap,
@@ -62,35 +69,6 @@ legend.onAdd = function (myMap) {
   };
   legend.addTo(myMap); 
 
-  var CanvasLayer = L.GridLayer.extend({
-    createTile: function(coords){
-        // create a <canvas> element for drawing
-        var tile = L.DomUtil.create('canvas', 'leaflet-tile');
-        // setup tile width and height according to the options
-        var size = this.getTileSize();
-        tile.width = size.x;
-        tile.height = size.y;
-        // get a canvas context and draw something on it using coords.x, coords.y and coords.z
-        var ctx = tile.getContext('2d');
-        // return the tile so it can be rendered on screen
-        return tile;
-    }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }
 function createMarkers(data) {
@@ -103,10 +81,13 @@ function createMarkers(data) {
         // weight: 1,
         opacity: 0.5,
         fillOpacity:1
-      })
-      // .setRadius(data.mph_avg)
-      .bindPopup(`<html><strong>${item.city}
+      }).bindPopup(`<html><strong>${item.city}
       <br>Average Speed:${item.mph_avg}<br> Average wind direction:${item.deg_avg}</strong></html>`)
+      .on('mouseover',function(ev) {
+        ev.target.openPopup();
+      });
+       
+     
       })
      
       createMap(L.layerGroup(speedMap));
@@ -137,7 +118,7 @@ d3.json(queryurl, function(data) {
 
 
 
-
+  ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#800026']
 
 
 
