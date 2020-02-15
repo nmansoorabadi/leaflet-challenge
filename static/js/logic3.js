@@ -1,4 +1,4 @@
-// Create the fuction for Map
+// Create map object
     function createMap(speedMap) {
 
       const lightMap = L.tileLayer("https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}", {
@@ -26,31 +26,28 @@
       accessToken: API_KEY
     });
 
-    var myMap= L.map("map",{
-      center: [37.0902,-95.7129],
+    //Adding tile layer
 
-      
+    var myMap= L.map("map",{
+      center: [37.0902,-95.7129],    
       zoom: 5,
       layer : [lightMap,speedMap]
-
     });
 
 
-const baseMaps = {
-  // 'Satellite':satelliteMap,
-  'Grey Map': lightMap,
-  // 'Outdoors': outdoorMap,
-  'Street Map': streetMap,
-  'Dark Map' : darkMap,
-  'satellite-v9':satelliteMap
-
-},
-overlayLayer = {
-  'Wind Speed': speedMap,
-};
+  const baseMaps = {
+    // 'Satellite':satelliteMap,
+    'Grey Map': lightMap,
+    // 'Outdoors': outdoorMap,
+    'Street Map': streetMap,
+    'Dark Map' : darkMap,
+    'satellite-v9':satelliteMap
+  },
+  overlayLayer = {
+    'Wind Speed': speedMap,
+  };
 
 //   Create a layer control containing our baseMaps and overlay layer 
-
   L.control.layers(baseMaps, overlayLayer, {
     collapsed: true
   }).addTo(myMap);
@@ -59,25 +56,18 @@ overlayLayer = {
 
 // Create Lagend
     var legend = L.control({position: 'bottomright'});
-
     legend.onAdd = function (myMap) {
-
         var div = L.DomUtil.create('div', 'info legend'),
         grades = [0, 1,2,3,4,5],
         labels = [];
         for (var i = 0; i < grades.length; i++) {
-          
             div.innerHTML +=
                 '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
                 grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
-
           }
-
         return div;      
       };
       legend.addTo(myMap); 
-
-
     }
 
 //Create Markers
@@ -97,9 +87,6 @@ function createMarkers(data) {
         fillOpacity:1,
         startAngle:0,
         stopAngle:30
-      
-
-
       })
       .bindPopup(`<html><strong>${item.city}
       <br>Average Speed:${item.mph_avg}<br> Average wind direction:${item.deg_avg}</strong></html>`)
@@ -108,24 +95,19 @@ function createMarkers(data) {
       })
       .on('mouseout', function (e) {
           this.closePopup();
-      });
-       
-     
-      })
-     
-     
+      });    
+      }) 
       createMap(L.layerGroup(speedMap));
-
-
 }
 
+// Calling json data fron Flask API
 
-var queryurl="http://127.0.0.1:5000/";
-d3.json(queryurl, function(data) {
-    console.log(data);
-    createMarkers(data);
-                 
-});
+  var queryurl="http://127.0.0.1:5000/";
+  d3.json(queryurl, function(data) {
+      console.log(data);
+      createMarkers(data);
+                  
+  });
 
   function getColor(d) {
       return d > 5 ? '#67000d' :
@@ -140,10 +122,8 @@ d3.json(queryurl, function(data) {
             d > 0.5  ? '#ffffcc' :
                       '#FFEDA0';
   }
-
-
-
-  ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#800026']
+//Color code
+  // ['#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#800026']
 
 
  
